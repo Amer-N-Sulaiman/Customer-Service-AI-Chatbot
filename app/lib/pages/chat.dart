@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../classes/message.dart';
 import 'package:chat_bubbles/chat_bubbles.dart';
+import 'package:flutter/scheduler.dart';
+
 
 
 
@@ -14,27 +16,28 @@ class Chat extends StatefulWidget {
 class _ChatState extends State<Chat> {
 
   List<Message> messages= [
-    Message('bot', 'Hi there! how can I help you?'),
-    Message('user', 'Where is you address'),
-    Message('bot', 'It is new york 21st avenue'),
-    Message('bot', 'Hi there! how can I help you?'),
-    Message('user', 'Where is you address'),
-    Message('bot', 'It is new york 21st avenue'),
-    Message('bot', 'Hi there! how can I help you?'),
-    Message('user', 'Where is you address'),
-    Message('bot', 'It is new york 21st avenue'),
-    Message('bot', 'Hi there! how can I help you?'),
-    Message('user', 'Where is you address'),
-    Message('bot', 'It is new york 21st avenue'),
-    Message('bot', 'Hi there! how can I help you?'),
-    Message('user', 'Where is you address'),
-    Message('bot', 'It is new york 21st avenue'),
-    Message('bot', 'Hi there! how can I help you?'),
-    Message('user', 'Where is you address'),
-    Message('bot', 'It is new york 21st avenue'),
+    // Message('bot', 'Hi there! how can I help you?'),
+    // Message('user', 'Where is you address'),
+    // Message('bot', 'It is new york 21st avenue'),
+    // Message('bot', 'Hi there! how can I help you?'),
+    // Message('user', 'Where is you address'),
+    // Message('bot', 'It is new york 21st avenue'),
+    // Message('bot', 'Hi there! how can I help you?'),
+    // Message('user', 'Where is you address'),
+    // Message('bot', 'It is new york 21st avenue'),
+    // Message('bot', 'Hi there! how can I help you?'),
+    // Message('user', 'Where is you address'),
+    // Message('bot', 'It is new york 21st avenue'),
+    // Message('bot', 'Hi there! how can I help you?'),
+    // Message('user', 'Where is you address'),
+    // Message('bot', 'It is new york 21st avenue'),
+    // Message('bot', 'Hi there! how can I help you?'),
+    // Message('user', 'Where is you address'),
+    // Message('bot', 'It is new york 21st avenue'),
   ];
 
   ScrollController listScrollController = ScrollController();
+  final messageTextController = TextEditingController();
 
 
   @override
@@ -59,9 +62,9 @@ class _ChatState extends State<Chat> {
     for (int i=0; i<messages.length; i++){
       Widget messageWidget = BubbleSpecialThree(
         text: "${messages[i].body}",
-        color: i%2==0 ? Color(0xFFE8E8EE) : Color(0xFF1B97F3),
+        color: messages[i].sender=='bot' ? Color(0xFFE8E8EE) : Color(0xFF1B97F3),
         tail: true,
-        isSender: i%2==0 ? false : true,
+        isSender: messages[i].sender=='user'
       );
 
       messageWidgets.add(messageWidget);
@@ -106,7 +109,9 @@ class _ChatState extends State<Chat> {
                               decoration: InputDecoration(
                                   hintText: "Type Something... ",
                                   hintStyle: TextStyle( color:     Colors.blueAccent),
-                                  border: InputBorder.none),
+                                  border: InputBorder.none
+                              ),
+                              controller: messageTextController,
                             ),
                           ),
 
@@ -125,6 +130,19 @@ class _ChatState extends State<Chat> {
                         color: Colors.white,
                       ),
                       onTap: () {
+                        String message = messageTextController.text;
+                        setState((){
+                          messages.add(Message('user', message));
+                          messages.add(Message('bot', 'your message was received'));
+                        });
+                        SchedulerBinding.instance.addPostFrameCallback((_) {
+                          final position = listScrollController.position.maxScrollExtent;
+                          listScrollController.jumpTo(position);
+                        });
+                        messageTextController.text = '';
+
+
+                        // print('scrolled');
                       },
                     ),
                   )
