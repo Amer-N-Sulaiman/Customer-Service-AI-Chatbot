@@ -2,6 +2,16 @@ import 'package:flutter/material.dart';
 import '../classes/message.dart';
 import 'package:chat_bubbles/chat_bubbles.dart';
 import 'package:flutter/scheduler.dart';
+import '../classes/sentencePreparer.dart';
+// import 'package:tflite/tflite.dart';
+// import 'package:tflite_flutter_helper/tflite_flutter_helper.dart';
+import 'package:tflite_flutter/tflite_flutter.dart';
+import '../classes/chatModel.dart';
+import 'package:flutter/services.dart';
+
+
+
+
 
 
 
@@ -38,12 +48,19 @@ class _ChatState extends State<Chat> {
 
   ScrollController listScrollController = ScrollController();
   final messageTextController = TextEditingController();
+  ChatModel chatModel;
 
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    // final interpreter = await tfl.Interpreter.fromAsset('your_model.tflite');
+    print('before chat model');
+    chatModel = ChatModel();
+    print('chatModel: ');
+    print(chatModel);
+
     WidgetsBinding.instance?.addPostFrameCallback((_) {
       // do something
       final position = listScrollController.position.maxScrollExtent;
@@ -129,17 +146,30 @@ class _ChatState extends State<Chat> {
                         Icons.send,
                         color: Colors.white,
                       ),
-                      onTap: () {
+                      onTap: () async {
                         String message = messageTextController.text;
+                        messageTextController.text = '';
+                        // SentencePreparer preparer = SentencePreparer();
+                        // List preparedMessage = preparer.prepareSentence(message);
+
+                        // TensorBuffer probabilityBuffer = TensorBuffer.fromList();
+
+                        // print(preparedMessage.shape);
+                        print(message);
+                        String pred = chatModel.classify(message);
+
                         setState((){
                           messages.add(Message('user', message));
-                          messages.add(Message('bot', 'your message was received'));
+                          messages.add(Message('bot', pred));
                         });
+
                         SchedulerBinding.instance.addPostFrameCallback((_) {
                           final position = listScrollController.position.maxScrollExtent;
                           listScrollController.jumpTo(position);
                         });
-                        messageTextController.text = '';
+                        
+                        
+
 
 
                         // print('scrolled');

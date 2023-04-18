@@ -1,0 +1,7 @@
+address
+delivery
+goodbye
+greeting
+items
+payments
+thanks

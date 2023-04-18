@@ -36,7 +36,8 @@ class _HomeState extends State<Home> {
           child: Column(
               children: [
                 Text('Welcome to our store',
-                  style: TextStyle(fontSize: 40)
+                  style: TextStyle(fontSize: 40),
+                  textAlign: TextAlign.center,
                 ),
                 SizedBox(height:20),
                 Text('Click the button bellow to chat with our chatbot', 
